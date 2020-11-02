@@ -39,7 +39,7 @@ namespace OutputConsole
 
             backBuffer.CharInfos = new Kernel.CharInfo[100 * 100];
 
-            for (int i = 0; i < backBuffer.CharInfos.Length; i++)
+            /*for (int i = 0; i < backBuffer.CharInfos.Length; i++)
             {
                 backBuffer.CharInfos[i] =
                 new Kernel.CharInfo
@@ -51,22 +51,24 @@ namespace OutputConsole
                         Kernel.CharAttributes.BackgroundBlue |
                         Kernel.CharAttributes.BackgroundIntensity
                 };
-            }
+            }*/
 
             backBuffer.Size = new Kernel.Coord(100, 100);
+
+            var renderer = new RenderTarget();
+
+            renderer.SetTarget(backBuffer);
+            renderer.DrawImage(image);
 
             var context = new ConsoleContext();
 
             context.Create(ConsoleContextDescriptor.Default);
-            context.SetTarget(backBuffer);
+            context.SetSource(backBuffer);
             context.SetViewPort(
                 new Kernel.SmallRect((short)0, (short)0, backBuffer.Size.X, backBuffer.Size.Y),
                 new Kernel.SmallRect((short)0, (short)0, backBuffer.Size.X, backBuffer.Size.Y)
             );
             context.Set();
-
-            context.DrawImage(image);
-
             context.Present();
 
             Console.ReadKey();

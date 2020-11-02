@@ -16,9 +16,10 @@ namespace OutputConsole.Graphics
         };
     }
 
-    public class ConsoleContext : RenderTarget, IContext
+    public class ConsoleContext : IContext
     {
         private IntPtr _handle;
+        private IImage _backBuffer;
         private Kernel.Coord _backBufferPartCoord;
         private Kernel.Coord _backBufferPartSize;
         private Kernel.SmallRect _viewPortRect;
@@ -47,7 +48,7 @@ namespace OutputConsole.Graphics
         {
             unsafe
             {
-                fixed (Kernel.CharInfo* charInfos = _image.CharInfos)
+                fixed (Kernel.CharInfo* charInfos = _backBuffer.CharInfos)
                 fixed (Kernel.SmallRect* viewPortRect = &_viewPortRect)
                 {
                     return Kernel.WriteToConsoleContext(
@@ -64,6 +65,11 @@ namespace OutputConsole.Graphics
         public bool Set()
         {
             return Kernel.SetConsoleContext(_handle);
+        }
+
+        public void SetSource(IImage image)
+        {
+            _backBuffer = image;
         }
 
         public void SetViewPort(Kernel.SmallRect source_rect, Kernel.SmallRect destination_rect)
