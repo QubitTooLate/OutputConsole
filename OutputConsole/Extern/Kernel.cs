@@ -15,7 +15,7 @@ namespace OutputConsole.Extern
         }
 
         [DllImport(Library, EntryPoint = "GetStdHandle")]
-        public static extern unsafe IntPtr GetStandardHandle(StandardHandle standard_handle);
+        public static extern unsafe IntPtr GetStandardConsoleContext(StandardHandle standard_handle);
 
         [Flags]
         public enum AccesRights : uint
@@ -33,19 +33,19 @@ namespace OutputConsole.Extern
 
         public const uint CONSOLE_TEXTMODE_BUFFER = 1;
 
-        [DllImport(Library, SetLastError = true)]
-        public static extern unsafe IntPtr CreateConsoleScreenBuffer(
-            AccesRights desiredAcces,
-            FileShareMode shareMode,
-            void* securityAttributes,
+        [DllImport(Library, EntryPoint = "CreateConsoleScreenBuffer", SetLastError = true)]
+        public static extern unsafe IntPtr CreateConsoleContext(
+            AccesRights desired_acces,
+            FileShareMode share_mode,
+            void* security_attributes,
             uint flags,
-            void* screenBufferData
+            void* screen_buffer_data
         );
 
-        [DllImport(Library, SetLastError = true)]
+        [DllImport(Library, EntryPoint = "SetConsoleActiveScreenBuffer", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetConsoleActiveScreenBuffer(
-            IntPtr consoleOutputHandle
+        public static extern bool SetConsoleContext(
+            IntPtr console_output_handle
         );
 
         [Flags]
@@ -67,6 +67,12 @@ namespace OutputConsole.Extern
             [FieldOffset(0)] public short UnicodeChar;
             [FieldOffset(0)] public sbyte AsciiChar;
             [FieldOffset(2)] public CharAttributes Attributes;
+
+            public CharInfo(short unicode_char, CharAttributes char_attributes) =>
+                (AsciiChar, UnicodeChar, Attributes) = (0, unicode_char, char_attributes);
+
+            public CharInfo(sbyte ascii_har, CharAttributes char_attributes) =>
+                (UnicodeChar, AsciiChar, Attributes) = (0, ascii_har, char_attributes);
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -85,16 +91,22 @@ namespace OutputConsole.Extern
             public short Top;
             public short Right;
             public short Bottom;
+
+            public SmallRect(short left, short top, short right, short bottom) =>
+                (Left, Top, Right, Bottom) = (left, top, right, bottom);
+
+            public SmallRect(int x, int y, int width, int height) =>
+                (Left, Top, Right, Bottom) = ((short)x, (short)y, (short)(x + width), (short)(y + height));
         }
 
         [DllImport(Library, EntryPoint = "WriteConsoleOutputW", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern unsafe bool WriteConsoleOutput(
-            IntPtr consoleOutputHandle,
+        public static extern unsafe bool WriteToConsoleContext(
+            IntPtr console_output_handle,
             CharInfo* buffer,
-            Coord bufferSize,
-            Coord bufferCoord,
-            SmallRect* writeRegion
+            Coord buffer_size,
+            Coord buffer_coord,
+            SmallRect* write_region
         );
     }
 }
