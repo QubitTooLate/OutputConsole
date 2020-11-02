@@ -1,7 +1,9 @@
-﻿using OutputConsole.Extern;
+﻿using OutputConsole.Data;
+using OutputConsole.Extern;
 using OutputConsole.Graphics;
 
 using System;
+using System.IO;
 
 namespace OutputConsole
 {
@@ -9,29 +11,9 @@ namespace OutputConsole
     {
         public static unsafe void Main(string[] args)
         {
-            var image = new Image(
-                new Kernel.CharInfo[]
-                {
-                    new Kernel.CharInfo
-                    {
-                        UnicodeChar = (short)'H',
-                        Attributes =
-                            Kernel.CharAttributes.ForegroundRed |
-                            Kernel.CharAttributes.ForegroundBlue |
-                            Kernel.CharAttributes.ForegroundIntensity
-                    },
-                    new Kernel.CharInfo
-                    {
-                        UnicodeChar = (short)'I',
-                        Attributes =
-                            Kernel.CharAttributes.BackgroundRed |
-                            Kernel.CharAttributes.BackgroundBlue |
-                            Kernel.CharAttributes.BackgroundIntensity
-                    }
-                },
-                2,
-                1
-            );
+            var provider = new FileCharInfoProvider(Path.Combine(Environment.CurrentDirectory, "Example/test.txt"));
+
+            var image = new Image(provider.CharInfos, 30, 1);
 
             var backBuffer = new Image(100, 100);
 
