@@ -1,4 +1,6 @@
 ﻿using OutputConsole.Extern;
+using OutputConsole.Graphics;
+
 using System;
 
 namespace OutputConsole
@@ -7,6 +9,75 @@ namespace OutputConsole
     {
         public static unsafe void Main(string[] args)
         {
+            var image = new TextImage();
+
+            image.CharInfos = new Kernel.CharInfo[]
+            {
+                new Kernel.CharInfo
+                {
+                    UnicodeChar = (short)'H',
+                    Attributes =
+                        Kernel.CharAttributes.ForegroundRed |
+                        Kernel.CharAttributes.ForegroundGreen |
+                        Kernel.CharAttributes.ForegroundBlue |
+                        Kernel.CharAttributes.ForegroundIntensity
+                },
+                new Kernel.CharInfo
+                {
+                    UnicodeChar = (short)'I',
+                    Attributes =
+                        Kernel.CharAttributes.BackgroundRed |
+                        Kernel.CharAttributes.BackgroundGreen |
+                        Kernel.CharAttributes.BackgroundBlue |
+                        Kernel.CharAttributes.BackgroundIntensity
+                }
+            };
+
+            image.Size = new Kernel.Coord(2, 1);
+
+            var backBuffer = new TextImage();
+
+            backBuffer.CharInfos = new Kernel.CharInfo[100 * 100];
+
+            for (int i = 0; i < backBuffer.CharInfos.Length; i++)
+            {
+                backBuffer.CharInfos[i] =
+                new Kernel.CharInfo
+                {
+                    UnicodeChar = (short)' ',
+                    Attributes =
+                        Kernel.CharAttributes.BackgroundRed |
+                        Kernel.CharAttributes.BackgroundGreen |
+                        Kernel.CharAttributes.BackgroundBlue |
+                        Kernel.CharAttributes.BackgroundIntensity
+                };
+            }
+
+            backBuffer.Size = new Kernel.Coord(100, 100);
+
+            var context = new ConsoleContext();
+
+            context.Create(ConsoleContextDescriptor.Default);
+            context.SetTarget(backBuffer);
+            context.SetViewPort(
+                new Kernel.SmallRect((short)0, (short)0, backBuffer.Size.X, backBuffer.Size.Y),
+                new Kernel.SmallRect((short)0, (short)0, backBuffer.Size.X, backBuffer.Size.Y)
+            );
+            context.Set();
+
+            context.DrawImage(image);
+
+            context.Present();
+
+            Console.ReadKey();
+
+
+
+
+
+
+            /*
+
             IntPtr standardContextHandle = Kernel.GetStandardConsoleContext(Kernel.StandardHandle.Output);
 
             if (standardContextHandle.ToInt32() <= 0)
@@ -61,6 +132,7 @@ namespace OutputConsole
             Console.ReadKey();
 
             result = Kernel.SetConsoleContext(standardContextHandle);
+            */
         }
     }
 }
