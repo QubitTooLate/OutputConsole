@@ -9,12 +9,12 @@ namespace OutputConsole.Graphics
         public void DrawImage(IImage image)
         {
             var source = image.CharInfos;
-            var width = image.Size.X;
-            var height = image.Size.Y;
+            var width = image.Width;
+            var height = image.Height;
 
             var back = _image.CharInfos;
-            var backWidth = _image.Size.X;
-            var backHeight = _image.Size.Y;
+            var backWidth = _image.Width;
+            var backHeight = _image.Height;
 
             for (int y = 0; y < height; y++)
             {

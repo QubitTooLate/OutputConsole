@@ -7,9 +7,9 @@ namespace OutputConsole.Graphics
 {
     public interface IImage
     {
-        Kernel.CharInfo[] CharInfos { get; set; }
-
-        Kernel.Coord Size { get; set; }
+        Kernel.CharInfo[] CharInfos { get; }
+        short Width { get; }
+        short Height { get; }
     }
 
     public interface IRenderTarget
@@ -40,6 +40,8 @@ namespace OutputConsole.Graphics
         void SetSource(IImage image);
 
         void SetViewPort(Kernel.SmallRect source_rect, Kernel.SmallRect destination_rect);
+
+        void SetViewPort();
 
         bool Set();
 

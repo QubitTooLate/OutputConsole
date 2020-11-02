@@ -81,5 +81,12 @@ namespace OutputConsole.Graphics
 
             _viewPortRect = destination_rect;
         }
+
+        public void SetViewPort()
+        {
+            _backBufferPartSize = new Kernel.Coord(_backBuffer.Width, _backBuffer.Height);
+
+            _viewPortRect = new Kernel.SmallRect();
+        }
     }
 }
