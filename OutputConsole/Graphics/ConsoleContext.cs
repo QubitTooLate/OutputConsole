@@ -86,7 +86,7 @@ namespace OutputConsole.Graphics
         {
             _backBufferPartSize = new Kernel.Coord(_backBuffer.Width, _backBuffer.Height);
 
-            _viewPortRect = new Kernel.SmallRect();
+            _viewPortRect = new Kernel.SmallRect((short)0, (short)0, _backBuffer.Width, _backBuffer.Height);
         }
     }
 }
